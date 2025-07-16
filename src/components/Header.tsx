@@ -1,9 +1,13 @@
 import { useState } from "react";
-import { Menu, X, Lightbulb, Users, Target, MessageCircle, Bookmark, User } from "lucide-react";
+import { Menu, X, Lightbulb, Users, Target, MessageCircle, Bookmark, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const navItems = [
     { name: "Idea Hub", icon: Lightbulb, href: "#ideas" },
@@ -42,12 +46,26 @@ const Header = () => {
 
           {/* Action Buttons */}
           <div className="hidden md:flex items-center space-x-3">
-            <Button variant="ghost" size="sm">
-              Sign In
-            </Button>
-            <Button className="btn-hero" size="sm">
-              <span>Join Now</span>
-            </Button>
+            {user ? (
+              <>
+                <span className="text-sm text-muted-foreground">
+                  {user.email}
+                </span>
+                <Button variant="ghost" size="sm" onClick={() => signOut()}>
+                  <LogOut className="w-4 h-4 mr-1" />
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" size="sm" onClick={() => navigate('/auth')}>
+                  Sign In
+                </Button>
+                <Button className="btn-hero" size="sm" onClick={() => navigate('/auth')}>
+                  <span>Join Now</span>
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -75,12 +93,26 @@ const Header = () => {
                 </a>
               ))}
               <div className="pt-4 space-y-3">
-                <Button variant="ghost" className="w-full">
-                  Sign In
-                </Button>
-                <Button className="btn-hero w-full">
-                  <span>Join Now</span>
-                </Button>
+                {user ? (
+                  <>
+                    <div className="text-sm text-muted-foreground px-2">
+                      {user.email}
+                    </div>
+                    <Button variant="ghost" className="w-full" onClick={() => signOut()}>
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button variant="ghost" className="w-full" onClick={() => navigate('/auth')}>
+                      Sign In
+                    </Button>
+                    <Button className="btn-hero w-full" onClick={() => navigate('/auth')}>
+                      <span>Join Now</span>
+                    </Button>
+                  </>
+                )}
               </div>
             </nav>
           </div>
